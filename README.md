@@ -41,3 +41,5 @@ Usage:
 Copyright (c) 2015-2019, Chandan B.N.
 
 Copyright (c) 2019, FIRST.ORG, INC
+
+Copyright (c) 2023, Giuseppe Compare (Italy,Rome)
