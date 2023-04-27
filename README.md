@@ -1,41 +1,16 @@
 #CVSSjs
 
-CVSS (Common Vulnerability Scoring System) Calculator
-
-<a href="http://cvssjs.github.io/cvssjs">Standalone Calculator</a>
-
-CVSSjs Version 0.3.1 beta
-
 Usage:
 
-    //include the cvss.js script 
-    <script src="http://cvssjs.github.io/cvssjs/cvss.js"></script>
-    
-    craete an HTML element with an id for eg.,
-    <div id="cvssboard"/>
-    
-    // create a new instance of CVSS calculator:
-    var c = new CVSS("cvssboard");
+Download the file and use index.html to use the tool
 
-    // create a new instance of CVSS calculator with some event handler callbacks
-    var c = new CVSS("cvssboard", {
-                onchange: function() {....} //optional
-                onsubmit: function() {....} //optional
-                }
-                
-    // set a vector
-    c.set('CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:C/C:N/I:N/A:L');
-    
-    // it is also backwards compatible with CVSS v2 vectors, 
-    // buts only sets the parameters that can be set without ambiguity.
-    c.set('AV:L/AC:L/Au:N/C:P/I:P/A:C');
-    
-    //get the value
-    c.get() returns an object like:
-      {
-        score: 4.3,
-        vector: 'CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:C/C:N/I:N/A:L'
-      }
+
+![image](https://user-images.githubusercontent.com/50102383/234880296-eb2106fd-b0f5-4dbd-b8d9-5bd8a12943e3.png)
+
+
+
+
+There are 2 tabs, one for software part and one dedicated to hardware part
 
 
 Copyright (c) 2015-2019, Chandan B.N.
