@@ -89,7 +89,8 @@ var CVSS = function (id, options) {
             P: {
                 l: 'Physical',
                 d: "<b>Bad:</b> The attack requires the attacker to physically touch or manipulate the vulnerable component. Physical interaction may be brief (e.g., evil maid attack) or persistent. An example of such an attack is a cold boot attack in which an attacker gains access to disk encryption keys after physically accessing the target system. Other examples include peripheral attacks via FireWire/USB Direct Memory Access (DMA)."
-            }
+             } 
+	   
         },
         AC: {
             L: {
@@ -249,6 +250,10 @@ var CVSS = function (id, options) {
     l.appendChild(document.createTextNode(' '));
     l.appendChild(this.vector = e('a'));
     this.vector.className = 'vector';
+    //Set vector attribute to keep the original string
+    this.vector.setAttribute('data-original', 'CVSS:3.1/AV:_/AC:_/PR:_/UI:_/S:_/C:_/I:_/A:_');
+
+    //Set HTML content too display string with changes
     this.vector.innerHTML = 'CVSS:3.1/AV:_/AC:_/PR:_/UI:_/S:_/C:_/I:_/A:_';
     
     if (options.onsubmit) {
@@ -316,7 +321,7 @@ CVSS.prototype.calculate = function () {
             N: 0.85,
             A: 0.62,
             L: 0.55,
-            P: 0.2
+            P: 0.2,
         },
         AC: {
             H: 0.44,
@@ -406,8 +411,20 @@ CVSS.prototype.calculate = function () {
             baseScore = roundUp1(Math.min((exploitabalitySubScore + impactSubScore) * scopeCoefficient, 10));
         }
     }
-
-    return baseScore.toFixed(1);
+    
+    var isHardware  = document.getElementById("hardware-tab").classList.contains('active');
+    if (val.AV === 'P' && isHardware) {
+	    hardware_val = 10/7.6;
+        baseScore = baseScore * hardware_val;
+	if(val.UI == 'R' && isHardware) {
+		baseScore = baseScore-2;
+	}
+        return baseScore.toFixed(1);
+    }
+    else {
+        return baseScore.toFixed(1);
+    }
+        
     } catch (err) {
         return err;
     }
@@ -416,14 +433,17 @@ CVSS.prototype.calculate = function () {
 CVSS.prototype.get = function() {
     return {
         score: this.score.innerHTML,
-        vector: this.vector.innerHTML
+        //vector: this.vector.innerHTML 
+        vector: this.vector.getAttribute('data-original')
     };
 };
 
+
 CVSS.prototype.setMetric = function(a) {
-    var vectorString = this.vector.innerHTML;
+   // var vectorString = this.vector.innerHTML;
+   var vectorString = this.vector.getAttribute('data-original');
     if (/AV:.\/AC:.\/PR:.\/UI:.\/S:.\/C:.\/I:.\/A:./.test(vectorString)) {} else {
-        vectorString = 'AV:_/AC:_/PR:_/UI:_/S:_/C:_/I:_/A:_';
+            vectorString = 'AV:_/AC:_/PR:_/UI:_/S:_/C:_/I:_/A:_';
     }
     //e("E" + a.id).checked = true;
     var newVec = vectorString.replace(new RegExp('\\b' + a.name + ':.'), a.name + ':' + a.value);
@@ -455,7 +475,16 @@ CVSS.prototype.set = function(vec) {
 };
 
 CVSS.prototype.update = function(newVec) {
+    //Set string in the attributo without any apparance changes
+    this.vector.setAttribute('data-original', newVec);
+
+     //Replace AV:P with AV:H (only in the HTML content )when active tab is active
+    var hw_vector  = document.getElementById("hardware-tab").classList.contains('active');
+    if(hw_vector){ 
+        newVec = newVec.replace("AV:P", "AV:H");
+    } 
     this.vector.innerHTML = newVec;
+
     var s = this.calculate();
     this.score.innerHTML = s;
     var rating = this.severityRating(s);

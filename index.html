@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>CVSS Calculator v3.1 - Base Score</title>
+    <title>CVSS Calculator v3.1 - Hardware&Software</title>
 <link rel="icon" 
       type="image/png" 
       href="favicon.png">
@@ -16,54 +16,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" media="all" href="cvss.css">
     <script src="cvss.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <style>
-        body {
-            background-color: #e0e4e4;
-            font-family: arial;
-            padding: 1em;
-            text-align: center;
-            align-content: center;
-        }
-        #footer {
-            font-size: x-small;
-        }
-        #cvssboard {
-            text-align: center;
-            align-content: center;
-        }
-        #footer, H3 {
-            color: gray;
-        }
-@media screen and (min-width: 720px) {
-        #cvssboard {
-            width: 640px;
-            align-content: center;
-            display: inline-block;
-        }
-}
+   
     </style>
 </head>
 
 <body>
     <hgroup>
-    <h3>CVSS v3.1 Base Score Calculator</h3></hgroup>
-    <div id="cvssboard">
+    <h3>CVSS Calculator v3.1 - Hardware&Software</h3>
+	</hgroup>
+	
+	<div class="container">
+	
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="software-tab" data-bs-toggle="tab" data-bs-target="#software-tab-pane" type="button" role="tab" aria-controls="software-tab-pane" aria-selected="true">Software</button>
+    </li>
+    <li class="nav-item" role="presentation">
+    <button class="nav-link" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-tab-pane" type="button" role="tab" aria-controls="hardware-tab-pane" aria-selected="false">Hardware</button>
+    </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="software-tab-pane" role="tabpanel" aria-labelledby="software-tab" tabindex="0">
+	<div id="cvssboardsoftware">
     </div>
-    <br>
-    <footer id="footer">
-Copyright 2019 © Chandan
-<br/><a href="https://github.com/cvssjs">CVSSjs</a> is free to use, copy, modification under a BSD like licence.
-<br/>Common Vulnerability Scoring System (CVSS) is a free and open standard. It is owned and managed by <a href="http://www.first.org/cvss">FIRST.Org</a>.</footer>
+    </div>
+    <div class="tab-pane fade" id="hardware-tab-pane" role="tabpanel" aria-labelledby="hardware-tab" tabindex="0">
+		<div id="cvssboardhardware">
+    </div>
+	</div>
+    </div>
+	</div>
+
     <script>
-        var c = new CVSS("cvssboard", {
+        var s = new CVSS("cvssboardsoftware","software", {
             onchange: function() {
-                window.location.hash = c.get().vector;
-                c.vector.setAttribute('href', '#' + c.get().vector)
+                window.location.hash = s.get().vector;
+                s.vector.setAttribute('href', '#' + s.get().vector)
             }
         });
+		
+		var h = new CVSS("cvssboardhardware","hardware",{
+		onchange: function() {
+		        window.location.hash = h.get().vector;
+                h.vector.setAttribute('href', '#' + h.get().vector)
+				
+
+		}
+		});
+		
         if (window.location.hash.substring(1).length > 0) {
-            c.set(decodeURIComponent(window.location.hash.substring(1)));
+            s.set(decodeURIComponent(window.location.hash.substring(1)));
         }
+		
+		
+		 if (window.location.hash.substring(1).length > 0) {
+            h.set(decodeURIComponent(window.location.hash.substring(1)));
+        }
+
+        // Nascosti elementi nel calcolatore hardware
+        document.getElementById("cvssboardhardware").getElementsByTagName("dd")[0].style.display='none';
+        document.getElementById("cvssboardhardware").getElementsByTagName("dd")[1].style.display='none';
+        document.getElementById("cvssboardhardware").getElementsByTagName("dd")[2].style.display='none';
+
+        //Modifica label nel calcolatore hardware
+        document.querySelector("[for=cvssboardhardwareAVP]").innerHTML='<i class="AVP"></i> Hardware';
+
+        
+        //POP HOVER - modifica descrizione del contenuto hardware
+        var parent = document.getElementById("cvssboardhardware").getElementsByTagName("dd")[3]
+        var small = parent.getElementsByTagName("small");
+        small[0].innerHTML = "<b>Hardware:</b> ";
+
     </script>
 
 </body>
