@@ -2,6 +2,8 @@
  *
  * Copyright (c) 2019, FIRST.ORG, INC
  *
+ * Copyright (c) 2023, Giuseppe Compare, jhackers, jhacker91
+ *
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -413,9 +415,15 @@ CVSS.prototype.calculate = function () {
     }
     
     var isHardware  = document.getElementById("hardware-tab").classList.contains('active');
+    
+    if ((val.S === 'U' || val.s === 'C') && isHardware) {
+        baseScore = roundUp1(Math.min((exploitabalitySubScore + impactSubScore) * scopeCoefficient, 10));
+    }
+
     if (val.AV === 'P' && isHardware) {
 	    hardware_val = 10/7.6;
         baseScore = baseScore * hardware_val;
+        
 	if(val.UI == 'R' && isHardware) {
 		baseScore = baseScore-2;
 	}
